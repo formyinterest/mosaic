@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+.venv-build/
+build/
+dist/
+installer_output/
+smoke-build/
+smoke-dist/
+mosaic_session_presets.json
+mosaic_zoom_debug.log
+monitor_yolo_test.png
+monitor_yolo_sync_test.png
+orientation_debug/
+
+# Model weights -- download instead of committing, see README.md
+models/*.onnx
+models/*.pt
+
+# Regression test fixtures -- supply your own, see README.md
+test/

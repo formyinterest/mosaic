@@ -1,0 +1,10 @@
+PyQt5>=5.15.0
+# PyQt5 owns the GUI event loop. The GUI-enabled OpenCV wheels bundle a
+# different Qt runtime and crash xcb when imported in the same process.
+opencv-python-headless>=4.5.0
+numpy>=1.21.0
+mss>=6.1.0
+keyboard>=0.13.5
+pyinstaller>=5.0.0
+dxcam>=0.0.9
+onnxruntime-directml>=1.20.0

@@ -87,15 +87,31 @@ python mosaic.py
 
 ---
 
-## 📦 단독 실행 파일 빌드 (PyInstaller)
+## 📦 빌드 (PyInstaller + 설치 프로그램)
 
 ```powershell
-pyinstaller mosaic.spec --noconfirm
+build.bat
 ```
 
-PyQt5·OpenCV·onnxruntime-directml 등 번들 용량이 커서 one-file 형식은 지원하지 않습니다. 빌드 완료 후 `dist\mosaic\mosaic.exe`를 실행합니다.
+`.venv-build`에 독립된 가상환경을 새로 만들어 `requirements.txt`를 설치하고 PyInstaller로 `dist\mosaic\mosaic.exe`를 빌드합니다. PyQt5·OpenCV·onnxruntime-directml 등 번들 용량이 커서 one-file 형식은 지원하지 않습니다.
 
-> `dist/`, `build/` 폴더와 `*.spec` 파일은 `.gitignore`에 포함되어 있습니다.
+Inno Setup(`ISCC.exe`)이 설치돼 있으면 이어서 설치 프로그램(`installer_output\MosaicSetup.exe`)도 함께 빌드합니다. 없으면 `winget install JRSoftware.InnoSetup`으로 설치 후 다시 실행하세요.
+
+> `dist/`, `build/`, `.venv-build/`, `installer_output/` 폴더는 `.gitignore`에 포함되어 있습니다.
+
+### 시작 프로그램 등록 (선택)
+
+설치 프로그램 자체에는 "Windows 시작 시 자동 실행" 옵션이 없습니다. 필요하면 시작 프로그램 폴더에 바로가기를 직접 등록하세요 (`installer.iss`가 단축키 바로가기를 만들 때 쓰는 것과 동일한 COM 방식).
+
+```powershell
+$ws = New-Object -ComObject WScript.Shell
+$lnk = $ws.CreateShortcut("$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\화면 모자이크.lnk")
+$lnk.TargetPath = "$env:LOCALAPPDATA\Programs\Mosaic\mosaic.exe"  # 설치 프로그램으로 설치한 경우
+$lnk.WorkingDirectory = Split-Path $lnk.TargetPath
+$lnk.Save()
+```
+
+설치 프로그램 없이 `dist\mosaic` 폴더만 옮겨서 쓰는 포터블 방식이면 `TargetPath`를 그 폴더 안 `mosaic.exe`의 전체 경로로 바꾸면 됩니다. 해제하려면 `Win+R` → `shell:startup` 입력 후 생성된 바로가기를 지우면 됩니다.
 
 ---
 

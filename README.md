@@ -62,10 +62,14 @@ pip install -r requirements.txt
 
 ```powershell
 pip install ultralytics
-python -c "from ultralytics import YOLO; YOLO('yolo11n-pose.pt').export(format='onnx')"
+python -c "from ultralytics import YOLO; YOLO('yolo11n-pose.pt').export(format='onnx', imgsz=480)"
+pip install --force-reinstall onnxruntime-directml
 ```
 
 현재 폴더에 생성된 `yolo11n-pose.onnx`를 `models/` 아래로 옮기면 됩니다. (`orientation.onnx`는 선택 사항 -- 없으면 포즈 키포인트 기반 방향 추정으로 자동 대체되며, 직접 학습해야 하는 모델이라 별도 배포하지 않습니다. 계약은 `models/ORIENTATION_MODEL.md` 참고.)
+
+> ⚠️ `imgsz=480`을 빼면 `yolo_pose_estimator.py`의 letterbox 입력 크기(480)와 맞지 않아 첫 추론에서 바로 shape mismatch로 죽습니다.
+> ⚠️ export 과정에서 ultralytics가 순정 `onnxruntime`을 자동 설치하며 `onnxruntime-directml`의 파일을 덮어씁니다 (둘 다 같은 `onnxruntime` 모듈 경로를 씁니다). 마지막 줄로 재설치해 복구하지 않으면 `DmlExecutionProvider`가 사라지고 GPU 대신 CPU로 조용히 폴백합니다.
 
 ### 테스트 데이터 (선택)
 

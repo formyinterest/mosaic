@@ -11,7 +11,7 @@
 |------|------|
 | **모자이크 / 검정 모드** | 지정 영역을 픽셀 모자이크 또는 완전 검정으로 실시간 처리 |
 | **다중 창** | 최대 9개의 독립 오버레이 창 동시 운용 |
-| **YOLO 인체 검열** | ROCm GPU에서 모든 사람을 한 번에 추론하고 얼굴·흉부·둔부 ROI만 투명 오버레이로 검열 |
+| **YOLO 인체 검열** | GPU(DirectML, 벤더 무관)에서 모든 사람을 한 번에 추론하고 얼굴·흉부·둔부 ROI만 투명 오버레이로 검열 -- GPU가 없으면 CPU로 자동 폴백 |
 | **랜덤 잠깐 해제 (Peek)** | 설정한 랜덤 시간마다 모자이크를 잠시 해제 후 자동 복원 |
 | **단축키 제어** | 키보드 단축키로 전체 ON/OFF 및 창별 설정 접근 |
 
@@ -83,7 +83,7 @@ python mosaic.py
 
 > ⚠️ `keyboard` 라이브러리는 전역 키 후킹을 위해 **관리자 권한** 실행을 권장합니다.
 
-트레이 메뉴의 `YOLO 인체 영역 검열 (GPU)`에서 모니터를 선택합니다. YOLO 모드는 GPU가 없을 때 CPU로 폴백하지 않고 오류를 표시합니다.
+트레이 메뉴의 `YOLO 인체 영역 검열 (GPU)`에서 모니터를 선택합니다. DirectML을 지원하는 GPU(NVIDIA/AMD/Intel 무관)가 있으면 그걸 쓰고, 없으면 자동으로 CPU로 폴백합니다 (에러 없이 조용히 전환되며, 실제로 어떤 provider가 잡혔는지는 실행 시 콘솔에 `provider=...`로 출력됩니다).
 
 ---
 
@@ -93,7 +93,7 @@ python mosaic.py
 pyinstaller mosaic.spec --noconfirm
 ```
 
-ROCm/Torch 데이터가 4GB를 넘으므로 one-file 형식은 지원하지 않습니다. 빌드 완료 후 Linux/WSL에서는 `dist/mosaic/mosaic`, Windows 전용 환경에서는 `dist\mosaic\mosaic.exe`를 실행합니다.
+PyQt5·OpenCV·onnxruntime-directml 등 번들 용량이 커서 one-file 형식은 지원하지 않습니다. 빌드 완료 후 `dist\mosaic\mosaic.exe`를 실행합니다.
 
 > `dist/`, `build/` 폴더와 `*.spec` 파일은 `.gitignore`에 포함되어 있습니다.
 

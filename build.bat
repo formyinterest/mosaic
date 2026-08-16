@@ -20,6 +20,16 @@ echo.
 echo Build succeeded! dist\mosaic\mosaic.exe ready.
 
 echo.
+echo Zipping portable build...
+if not exist "installer_output" mkdir "installer_output"
+powershell -NoProfile -Command "Compress-Archive -Path 'dist\mosaic\*' -DestinationPath 'installer_output\mosaic-portable.zip' -Force"
+if %errorlevel% neq 0 (
+    echo Zip failed!
+    exit /b 1
+)
+echo Portable zip ready: installer_output\mosaic-portable.zip
+
+echo.
 echo Building installer...
 set "ISCC="
 where ISCC.exe >nul 2>nul && set "ISCC=ISCC.exe"

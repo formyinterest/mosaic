@@ -117,14 +117,15 @@ class YoloCensorPipeline:
             rendered = frame_bgr.copy()
             t_copy = time.perf_counter()
             if self.mode == "black":
-                rendered[mask == 0 if self.invert else mask > 0] = 0
+                censor_mask = cv2.bitwise_not(mask) if self.invert else mask
+                cv2.copyTo(np.zeros_like(rendered), censor_mask, rendered)
             elif self.invert:
                 # Invert: censor everything EXCEPT the selected region instead
                 # of just the region itself. Pixelate the whole frame, then
                 # restore the original pixels back inside `mask` (the part
                 # that should stay visible).
                 rendered = mosaic_frame(frame_bgr, self.mosaic_ratio)
-                rendered[mask > 0] = frame_bgr[mask > 0]
+                cv2.copyTo(frame_bgr, mask, rendered)
             else:
                 # mosaic_region pixelates straight from each polygon's own
                 # bounding rect -- it never looks at `mask`, so the eye
